@@ -1,0 +1,18 @@
+module PROJCycling
+{
+    /* Not use actually
+    sound soundFX_BikeStop {
+        category = Item,
+        clip {
+            file = media/sound/BikeStop.ogg,
+        }
+    }
+
+    sound soundFX_BikeRiding {
+        category = Item,
+        clip {
+            file = media/sound/BikeRiding.ogg,
+        }
+    }
+    */
+}

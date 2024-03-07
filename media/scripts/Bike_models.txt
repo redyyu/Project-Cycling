@@ -1,0 +1,22 @@
+module PROJCycling
+{
+    
+    model Bike {
+        mesh = BikeStatic,
+        texture = Bike,
+        scale = 1,
+    }
+
+    model Bike_Ground {
+        mesh = BikeStatic,
+        texture = Bike,
+        scale = 1,
+        invertX = true,
+        attachment world
+        {
+            offset = 0.0000 0.0000 0.0000,
+            rotate = 0.0000 0.0000 0.0000,
+        }
+    }
+
+}

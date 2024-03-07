@@ -1,0 +1,5 @@
+Sandbox_EN = {
+	Sandbox_PROJCycling = "Project Cycling"
+	Sandbox_PROJCycling_SPAWN_CHANCE = "Spawn Chance"
+	Sandbox_PROJCycling_SPAWN_CHANCE_tooltip = "Probability of bike spawn by this mod."
+}
