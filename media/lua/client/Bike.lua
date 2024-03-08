@@ -39,11 +39,11 @@ Bike.dropBike = function (playerObj, square)
         playerObj:getInventory():Remove(item)
         local pdata = getPlayerData(playerObj:getPlayerNum());
         if pdata ~= nil then
-            pdata.playerInventory:refreshBackpacks();
-            pdata.lootInventory:refreshBackpacks();
+            pdata.playerInventory:refreshBackpacks()
+            pdata.lootInventory:refreshBackpacks()
         end
-        playerObj:setPrimaryHandItem(nil);
-        playerObj:setSecondaryHandItem(nil);
+        playerObj:setPrimaryHandItem(nil)
+        playerObj:setSecondaryHandItem(nil)
         square:AddWorldInventoryItem(item, ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
     end
 end
