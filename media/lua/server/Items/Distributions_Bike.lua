@@ -60,29 +60,31 @@ end
 Events.OnSeeNewRoom.Add(spawnBikeInGarage)
 
 
-local function spawnBikeOnRaod(square)
-    if not square:getModData().BikeSpawn then
-        square:getModData().BikeSpawn = true
-        local objects = square:getObjects()
-        for j=0, objects:size()-1 do
-            local obj = objects:get(j)
-            if obj:getSprite() then
-                local base_chance = SPAWN_SPRITES[obj:getSprite():getName()]
-                if base_chance ~= nil then
-                    if ZombRand(1, 100) < base_chance * spawn_chance_rate then
-                        local num_type = ZombRand(1, #BIKE_TYPES)
-                        square:AddWorldInventoryItem(BIKE_TYPES[num_type], ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
-                    end
-                end
-            end
-        end
-    else
-        if isDebugEnabled() then
-            -- print('Square already spawned -----------------------')
-        end
-    end
-end
-
 -- it little big slow down the FPS of game, but seems ok.
-Events.LoadGridsquare.Add(spawnBikeOnRaod)
+-- but I don't want it! waste proformance.
+-- local function spawnBikeOnRaod(square)
+--     if not square:getModData().BikeSpawn then
+--         square:getModData().BikeSpawn = true
+--         local objects = square:getObjects()
+--         for j=0, objects:size()-1 do
+--             local obj = objects:get(j)
+--             if obj:getSprite() then
+--                 local base_chance = SPAWN_SPRITES[obj:getSprite():getName()]
+--                 if base_chance ~= nil then
+--                     if ZombRand(1, 100) < base_chance * spawn_chance_rate then
+--                         local num_type = ZombRand(1, #BIKE_TYPES)
+--                         square:AddWorldInventoryItem(BIKE_TYPES[num_type], ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
+--                     end
+--                 end
+--             end
+--         end
+--     else
+--         if isDebugEnabled() then
+--             -- print('Square already spawned -----------------------')
+--         end
+--     end
+-- end
+
+
+-- Events.LoadGridsquare.Add(spawnBikeOnRaod)
 
