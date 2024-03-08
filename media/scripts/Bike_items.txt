@@ -8,7 +8,7 @@ module PROJCycling
         Weight = 4,
         Type = Container,
         DisplayCategory = Container,
-        Capacity = 28,
+        Capacity = 20,
         WeightReduction = 98,
         DisplayName = Bicycle,
         Icon = Bike,
@@ -17,7 +17,7 @@ module PROJCycling
 
         SurvivalGear  = TRUE,
         RequiresEquippedBothHands = TRUE,
-        RunSpeedModifier = 1.25, /* Its wont be speed up, only for cover other clothes slow down.*/
+        RunSpeedModifier = 1.05, /* Its wont be speed up, only for cover other clothes slow down.*/
         MetalValue = 40,
 
         StaticModel = Bike,

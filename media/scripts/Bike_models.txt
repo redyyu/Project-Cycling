@@ -3,13 +3,13 @@ module PROJCycling
     
     model Bike {
         mesh = BikeStatic,
-        texture = Bike,
+        texture = BikeTex,
         scale = 1,
     }
 
     model Bike_Ground {
         mesh = BikeStatic,
-        texture = Bike,
+        texture = BikeTex,
         scale = 1,
         invertX = true,
         attachment world

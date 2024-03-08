@@ -39,7 +39,7 @@ function ISUntakeBike:perform()
     self.character:setPrimaryHandItem(nil)
     self.character:setSecondaryHandItem(nil)
 
-    self.toSquare:AddWorldInventoryItem(self.item, ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
+    self.toSquare:AddWorldInventoryItem(self.item, 0, 0, 0)
     local pdata = getPlayerData(self.character:getPlayerNum())
     if pdata ~= nil then
         pdata.playerInventory:refreshBackpacks()

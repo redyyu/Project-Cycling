@@ -125,7 +125,7 @@ Bike.onPlayerUpdate = function (playerObj)
         local player_stats = playerObj:getStats()
         local endurance = player_stats:getEndurance()
         if endurance < 0.95 then
-            player_stats:setEndurance(endurance + 0.00015)
+            player_stats:setEndurance(endurance + 0.00010)  -- dont change this number, unless know what doing.
         end
 
         -- forced drop bike while climb window or fence, but not wall. 
@@ -236,7 +236,7 @@ Bike.onGrabBikeFromContainer = function (playerObj, bike)
         container:Remove(item)
         local pdata = getPlayerData(playerObj:getPlayerNum())
         if pdata ~= nil then
-            playerObj:getCurrentSquare():AddWorldInventoryItem(bike, ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
+            playerObj:getCurrentSquare():AddWorldInventoryItem(bike, 0, 0, 0)
             pdata.playerInventory:refreshBackpacks()
             pdata.lootInventory:refreshBackpacks()
         end

@@ -4,13 +4,20 @@ local spawn_chance_rate = spawn_chance / 100
 local BIKE_TYPES = {
     "PROJCycling.Bike",
 }
-local SPAWN_TIELS = {
-    "lighting_outdoor_01_0",
-    "lighting_outdoor_01_1",
-    "lighting_outdoor_01_2",
-    "lighting_outdoor_01_16",
-    "lighting_outdoor_01_17",
+
+local SPAWN_ROOMS = {
+    ["garagestorage"] = 2,
+    ["garage"] = 2,
 }
+
+local SPAWN_SPRITES = {
+    ["lighting_outdoor_01_0"] = 2,
+    ["lighting_outdoor_01_1"] = 2,
+    ["lighting_outdoor_01_2"] = 2,
+    ["lighting_outdoor_01_16"] = 2,
+    ["lighting_outdoor_01_17"] = 5,
+}
+
 
 for _, item_type in ipairs(BIKE_TYPES) do
     table.insert(ProceduralDistributions["list"]["GigamartTools"].items, item_type);
@@ -44,41 +51,39 @@ end
 
 
 local function spawnBikeInGarage(room)
-    if ZombRand(1, 100) > (100 - spawn_chance / 5) then
-        if room:getName() == 'garagestorage' or room:getName() == 'garage' then
-            local square = room:getRandomFreeSquare()
-            local num_type = ZombRand(1, #BIKE_TYPES)
-            square:AddWorldInventoryItem(BIKE_TYPES[num_type], ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
-        end
+    local base_chance = SPAWN_ROOMS[room:getName()]
+    if base_chance ~= nil and ZombRand(1, 100) < base_chance * spawn_chance_rate then
+        local square = room:getRandomFreeSquare()
+        local num_type = ZombRand(1, #BIKE_TYPES)
+        square:AddWorldInventoryItem(BIKE_TYPES[num_type], ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
     end
 end
 Events.OnSeeNewRoom.Add(spawnBikeInGarage)
 
 
-local function spawnBikeOnRaod(obj)
-    print(obj)
-    print('---------------------------Events.OnObjectAdded----------------------')
-    if obj:getSpriteName() and ZombRand(1, 100) > (100 - spawn_chance / 5) then
-        for _, v in ipairs(SPAWN_TIELS) do
-            if v == obj:getSpriteName() then
-                local num_type = ZombRand(1, #BIKE_TYPES)
-                local square = obj:getSquare()
-                if square and ZombRand(1, 100) then
-                    square:AddWorldInventoryItem(BIKE_TYPES[num_type], ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
+local function spawnBikeOnRaod(square)
+    if not square:getModData().BikeSpawn then
+        square:getModData().BikeSpawn = true
+        local objects = square:getObjects()
+        for j=0, objects:size()-1 do
+            local obj = objects:get(j)
+            if obj:getSprite() then
+                local base_chance = SPAWN_SPRITES[obj:getSprite():getName()]
+                if base_chance ~= nil then
+                    if ZombRand(1, 100) < base_chance * spawn_chance_rate then
+                        local num_type = ZombRand(1, #BIKE_TYPES)
+                        square:AddWorldInventoryItem(BIKE_TYPES[num_type], ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
+                    end
                 end
             end
         end
+    else
+        if isDebugEnabled() then
+            -- print('Square already spawned -----------------------')
+        end
     end
 end
-Events.OnObjectAdded.Add(spawnBikeOnRaod)
 
-
--- local function spawnBikeOnRaod(square)
---     if not square:getModData().RolledSquare then
---         square:getModData().RolledSquare = true
-        
---     end
--- end
-
--- Events.LoadGridsquare.Add(spawnBikeOnRaod)
+-- it little big slow down the FPS of game, but seems ok.
+Events.LoadGridsquare.Add(spawnBikeOnRaod)
 
