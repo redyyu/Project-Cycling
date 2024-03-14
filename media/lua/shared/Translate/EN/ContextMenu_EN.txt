@@ -1,5 +1,5 @@
 ContextMenu_EN = {
-	ContextMenu_GET_ON_BIKE = "Get On Bike",
+	ContextMenu_TAKE_RIDE = "Take Ride (%1)",
 	ContextMenu_GET_OFF_BIKE = "Get Off Bike",
 	ContextMenu_GRAB_BIKE_TO_GROUND = "Grab Bike to Ground"
 }
