@@ -1,0 +1,5 @@
+IGUI_EN = {
+
+    IGUI_PlayerText_Cant_Take_Bike_This_Way = "I Can't take bike this way."
+
+}

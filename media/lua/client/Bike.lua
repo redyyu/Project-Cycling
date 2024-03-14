@@ -1,4 +1,5 @@
-BIKE_TYPES = {"PROJCycling.Bike"}
+require "TimedActions/ISTimedActionQueue"
+require "TimedActions/ISInventoryTransferAction"
 
 local seatNameTable = {"SeatFrontLeft", "SeatFrontRight", "SeatMiddleLeft", "SeatMiddleRight", "SeatRearLeft", "SeatRearRight"}
 local soundFX = {
@@ -18,38 +19,19 @@ local Bike = {}
 
 
 Bike.getBikesFromInvertory = function (playerInv)
-    local bikes = {}
-    for i = 1, #BIKE_TYPES do
-        local bikesArray = playerInv:getItemsFromType(BIKE_TYPES[i])
-        for j = 0, bikesArray:size() - 1 do
-            table.insert(bikes, bikesArray:get(j))
+    local bike_items = {}
+    local items = playerInv:getItems()
+    for j = 0, items:size() - 1 do
+        local item = items:get(j)
+        if item:hasTag('Bike') then
+            table.insert(bike_items, item)
         end
     end
-    return bikes
+    return bike_items
 end
 
 
-Bike.dropBike = function (playerObj, square)
-    local item = playerObj:getPrimaryHandItem()
-    if not square then
-        square = playerObj:getSquare()
-    end
-
-    if item and item:hasTag('Bike') then
-        playerObj:getInventory():Remove(item)
-        local pdata = getPlayerData(playerObj:getPlayerNum());
-        if pdata ~= nil then
-            pdata.playerInventory:refreshBackpacks()
-            pdata.lootInventory:refreshBackpacks()
-        end
-        playerObj:setPrimaryHandItem(nil)
-        playerObj:setSecondaryHandItem(nil)
-        square:AddWorldInventoryItem(item, ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
-    end
-end
-
-
-Bike.parseWorldObjects = function (worldobjects, playerIdx)
+Bike.parseWorldObjects = function (worldobjects, playerNum)
     local squares = {}
     local doneSquare = {}
     local worldObjTable = {}
@@ -62,7 +44,7 @@ Bike.parseWorldObjects = function (worldobjects, playerIdx)
     end
 
     if #squares > 0 then
-        if JoypadState.players[playerIdx+1] then
+        if JoypadState.players[playerNum+1] then
             for _,square in ipairs(squares) do
                 for i=0,square:getWorldObjects():size() - 1 do
                     local obj = square:getWorldObjects():get(i)
@@ -90,102 +72,140 @@ Bike.parseWorldObjects = function (worldobjects, playerIdx)
 end
 
 
+Bike.dropItemInsanely = function(playerObj, item, square)
+    if playerObj and item then
+        if not square then
+            square = playerObj:getSquare()
+        end
+
+        if item == playerObj:getPrimaryHandItem() then
+            playerObj:setPrimaryHandItem(nil)
+        end
+        if item == playerObj:getSecondaryHandItem() then
+            playerObj:setSecondaryHandItem(nil)
+        end
+        
+        playerObj:getInventory():Remove(item)
+        local dropX,dropY,dropZ = ISInventoryTransferAction.GetDropItemOffset(playerObj, playerObj:getCurrentSquare(), primary)
+        playerObj:getCurrentSquare():AddWorldInventoryItem(item, dropX, dropY, dropZ)
+
+        local pdata = getPlayerData(playerObj:getPlayerNum());
+        if pdata ~= nil then
+            pdata.playerInventory:refreshBackpacks()
+            pdata.lootInventory:refreshBackpacks()
+        end
+    end
+end
+
+
 Bike.onPlayerUpdate = function (playerObj)
 
     local playerInv = playerObj:getInventory()
-    local bikes = Bike.getBikesFromInvertory(playerInv)
-    local item = playerObj:getPrimaryHandItem()
-    local hasBike = false
+    local handItem = playerObj:getPrimaryHandItem()
+    local equippedBike = false
 
-    -- Drop other bike. only keep one bike at time.
-    if #bikes > 0 then
-        if not item or not item:hasTag('Bike') then
-            item = bikes[1]
-            playerObj:setPrimaryHandItem(item)
-            playerObj:setSecondaryHandItem(item)
+    for _, item in ipairs(Bike.getBikesFromInvertory(playerInv)) do
+        -- DO NOT AUTO equipped, it will cause lot more logic prolbem,
+        -- such as conflict with other MOD did samething.
+        -- item will keep equip/unequip in millseconds, don't even see the action.
+        -- unless check the log.
+        
+        -- equip first Bike when no Bike equipped.
+        -- if not equippedBike and item:hasTag('Bike') then
+        --     playerObj:setPrimaryHandItem(item)
+        --     playerObj:setSecondaryHandItem(item)
+        --     equippedBike = item
+        -- end
+
+        -- drop any Bike not equipped.
+        if item:isEquipped() then
+            equippedBike = item
+        else
+            Bike.dropItemInsanely(playerObj, item)
         end
-        if item:hasTag('Bike') and #bikes > 1 then
-            for _, bike in ipairs(bikes) do
-                if item ~= bike then
-                    playerInv:Remove(bike)
-                    playerObj:getCurrentSquare():AddWorldInventoryItem(bike, ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
-                end
-            end
-            local pdata = getPlayerData(playerObj:getPlayerNum())
-            if pdata ~= nil then
-                pdata.playerInventory:refreshBackpacks()
-                pdata.lootInventory:refreshBackpacks()
-            end
-        end
-        hasBike = true
     end
 
-    -- Drop bike while do something else.
-    if playerObj:getVariableString("righthandmask") == "holdingbikeright" and hasBike then
-        local player_stats = playerObj:getStats()
-        local endurance = player_stats:getEndurance()
-        if endurance < 0.95 then
-            player_stats:setEndurance(endurance + 0.00010)  -- dont change this number, unless know what doing.
+    if equippedBike then
+        if isDebugEnabled() and playerObj:getCurrentState() ~= IdleState.instance() then
+            print("================= Bike whit CurrentState =====================")
+            print(playerObj:getCurrentState())
+            print("================= End Bike whit CurrentState =====================")
         end
 
-        -- forced drop bike while climb window or fence, but not wall. 
-        -- climb wall already in vanilla, just like taking a bag on hand.
-        if not (playerObj:getCurrentState() == IdleState.instance() or 
-                playerObj:getCurrentState() == PlayerAimState.instance()) then
-            Bike.dropBike(playerObj)
-        end
+        if playerObj:getCurrentState() == IdleState.instance() then
 
-        -- attach sound
-        playerObj:getEmitter():stopSoundByName('HumanFootstepsCombined')
-        if playerObj:isPlayerMoving() then
+            if playerObj:getVariableString("righthandmask") == "holdingbikeright" then
+                local player_stats = playerObj:getStats()
+                local endurance = player_stats:getEndurance()
+                if endurance < 0.95 then
+                    player_stats:setEndurance(endurance + 0.00010)  -- dont change this number, unless know what doing.
+                end
+        
+                -- attach sound
+                playerObj:getEmitter():stopSoundByName('HumanFootstepsCombined')
+                if playerObj:isPlayerMoving() then
+                    playerObj:getEmitter():stopSoundByName(soundFX.Stop.name)
+        
+                    if not playerObj:getEmitter():isPlaying(soundFX.Riding.name) then
+                        playerObj:getEmitter():playSound(soundFX.Riding.name)
+                        addSound(
+                            playerObj,
+                            playerObj:getX(),
+                            playerObj:getY(),
+                            playerObj:getZ(),
+                            soundFX.Riding.radius,
+                            soundFX.Riding.volume
+                        )
+                    end
+                    playerObj:setVariable('RidingBike', true)
+                elseif playerObj:getVariableBoolean('RidingBike') then
+                    playerObj:getEmitter():stopSoundByName(soundFX.Riding.name)
+                    if not playerObj:getEmitter():isPlaying(soundFX.Stop.name) then
+                        playerObj:getEmitter():playSound(soundFX.Stop.name)
+                        addSound(
+                            playerObj,
+                            playerObj:getX(),
+                            playerObj:getY(),
+                            playerObj:getZ(),
+                            soundFX.Riding.radius,
+                            soundFX.Riding.volume
+                        )
+                    end
+                    playerObj:setVariable('RidingBike', false)
+                end
+            else
+                playerObj:getEmitter():stopSoundByName(soundFX.Stop.name)
+                playerObj:setVariable('RidingBike', false)
+            end
+
+        else -- Drop bike while do something else.
+            -- DO NOT `ISTimedActionQueue.isPlayerDoingAction(playerObj)` this not enough.
+            -- forced drop bike while climb window or fence, and others actions.
             playerObj:getEmitter():stopSoundByName(soundFX.Stop.name)
-
-            if not playerObj:getEmitter():isPlaying(soundFX.Riding.name) then
-                playerObj:getEmitter():playSound(soundFX.Riding.name)
-                addSound(
-                    playerObj,
-                    playerObj:getX(),
-                    playerObj:getY(),
-                    playerObj:getZ(),
-                    soundFX.Riding.radius,
-                    soundFX.Riding.volume
-                )
-            end
-            playerObj:setVariable('RidingBike', true)
-        elseif playerObj:getVariableBoolean('RidingBike') then
             playerObj:getEmitter():stopSoundByName(soundFX.Riding.name)
-            if not playerObj:getEmitter():isPlaying(soundFX.Stop.name) then
-                playerObj:getEmitter():playSound(soundFX.Stop.name)
-                addSound(
-                    playerObj,
-                    playerObj:getX(),
-                    playerObj:getY(),
-                    playerObj:getZ(),
-                    soundFX.Riding.radius,
-                    soundFX.Riding.volume
-                )
-            end
             playerObj:setVariable('RidingBike', false)
+            Bike.dropItemInsanely(playerObj, equippedBike)
         end
-    else
-        playerObj:getEmitter():stopSoundByName(soundFX.Stop.name)
-        playerObj:setVariable('RidingBike', false)
     end
 end
 
 
 Bike.onEnterVehicle = function (playerObj)
-	local vehicle = playerObj:getVehicle()
-    local areaCenter = vehicle:getAreaCenter(seatNameTable[vehicle:getSeat(playerObj)+1])
+    if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag('Bike') then
+        local equippedBike = playerObj:getPrimaryHandItem()
+        local vehicle = playerObj:getVehicle()
+        local areaCenter = vehicle:getAreaCenter(seatNameTable[vehicle:getSeat(playerObj)+1])
 
-    if areaCenter then 
-        local sqr = getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
-        Bike.dropBike(playerObj, sqr)
+        if areaCenter then
+            local sqr = getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
+            Bike.dropItemInsanely(playerObj, equippedBike, sqr)
+        end
     end
 end
 
 
-Bike.onEquipBike = function (playerObj, WItem)
+Bike.onEquipBike = function (playerNum, WItem)
+    local playerObj = getSpecificPlayer(playerNum)
     if WItem:getSquare() and luautils.walkAdj(playerObj, WItem:getSquare()) then
         if playerObj:getPrimaryHandItem() then
             ISTimedActionQueue.add(ISUnequipAction:new(playerObj, playerObj:getPrimaryHandItem(), 50));
@@ -198,21 +218,27 @@ Bike.onEquipBike = function (playerObj, WItem)
 end
 
 
-Bike.onUnequipBike = function(playerObj, item)
+Bike.onUnequipBike = function(playerNum, item)
+    local playerObj = getSpecificPlayer(playerNum)
     ISTimedActionQueue.add(ISUntakeBike:new(playerObj, item, playerObj:getCurrentSquare(), 25))
 end
 
 
-Bike.doFillWorldObjectContextMenu = function (player, context, worldobjects, test)
-    local playerObj = getSpecificPlayer(player)
+Bike.doFillWorldObjectContextMenu = function (playerNum, context, worldobjects, test)
+    local playerObj = getSpecificPlayer(playerNum)
     local playerInv = playerObj:getInventory()
     local item = playerObj:getPrimaryHandItem()
 
+    -- Bike Item has tag `HeavyItem`, native will take care many things.
+
     if item and item:hasTag('Bike') then
-        context:addOptionOnTop(getText("ContextMenu_GET_OFF_BIKE"), playerObj, Bike.onUnequipBike, item)
+        -- HeavyItem have own drop option, replace it
+        context:removeOptionByName(getText("ContextMenu_Drop"))
+        context:removeOptionByName(getText("ContextMenu_DropNamedItem", item:getDisplayName()))
+        context:addOptionOnTop(getText("ContextMenu_GET_OFF_BIKE"), playerNum, Bike.onUnequipBike, item)
         return
     else
-        local worldObjTable = Bike.parseWorldObjects(worldobjects, player)
+        local worldObjTable = Bike.parseWorldObjects(worldobjects, playerNum)
         if #worldObjTable == 0 then return false end
 
         for _, obj in ipairs(worldObjTable) do
@@ -220,8 +246,8 @@ Bike.doFillWorldObjectContextMenu = function (player, context, worldobjects, tes
             if item and item:hasTag('Bike') then
                 local old_option = context:getOptionFromName(getText("ContextMenu_Grab"))
                 if old_option then
-                    -- context:removeOptionByName(old_option.name)
-                    context:addOptionOnTop(getText("ContextMenu_GET_ON_BIKE"), playerObj, Bike.onEquipBike, obj)
+                    context:removeOptionByName(old_option.name)
+                    context:addOptionOnTop(getText("ContextMenu_GET_ON_BIKE"), playerNum, Bike.onEquipBike, obj)
                     return
                 end                
             end
@@ -231,40 +257,49 @@ end
 
 
 Bike.onGrabBikeFromContainer = function (playerObj, bike)
-    local container = item:getContainer()
-    if container:getType() ~= "floor" then
-        container:Remove(item)
-        local pdata = getPlayerData(playerObj:getPlayerNum())
-        if pdata ~= nil then
-            playerObj:getCurrentSquare():AddWorldInventoryItem(bike, 0, 0, 0)
-            pdata.playerInventory:refreshBackpacks()
-            pdata.lootInventory:refreshBackpacks()
+    local playerObj = getSpecificPlayer(playerNum)
+    local container = bike:getContainer()
+    local inventory = getPlayerInventory(playerNum).inventory
+
+    if bike:getContainer() ~= inventory and inventory:hasRoomFor(playerObj, bike) then
+        if luautils.walkToContainer(bike:getContainer(), playerNum) then
+            ISTimedActionQueue.add(ISInventoryTransferAction:new(playerObj, bike, bike:getContainer(), inventory))
         end
+    else
+        ISInventoryPaneContextMenu.dropItem(bike, playerNum)
     end
+    
 end
 
 
-Bike.doInventoryContextMenu = function (playerNumber, context, items)
-    local playerObj = getSpecificPlayer(playerNumber)
+Bike.doInventoryContextMenu = function (playerNum, context, items)
+    local playerObj = getSpecificPlayer(playerNum)
     local items = ISInventoryPane.getActualItems(items)
+
+    -- Bike Item has tag `HeavyItem`, native will take care many things.
 
     for _, item in ipairs(items) do
         if item and item:hasTag('bike') then
             context:removeOptionByName(getText("ContextMenu_Equip_Two_Hands"))
             context:removeOptionByName(getText("ContextMenu_Unequip"))
-            local old_option = context:getOptionFromName(getText("ContextMenu_Grab"))
-            if old_option then
+
+            -- local old_option = context:getOptionFromName(getText("ContextMenu_Grab"))
+            -- NO Need this, `HeavyItem` don't have `Grab` option in Inventory.
+
+            if item == playerObj:getPrimaryHandItem() then
+                -- replace native Drop
+                context:removeOptionByName(getText("ContextMenu_Drop"))
+                context:addOptionOnTop(getText("ContextMenu_GET_OFF_BIKE"), playerNum, Bike.onUnequipBike, item)
+                return
+            else
                 -- context:removeOptionByName(old_option.name)
                 if item:getContainer():getType() == "floor" then
-                    context:addOptionOnTop(getText("ContextMenu_GET_ON_BIKE"), playerObj, Bike.onEquipBike, item:getWorldItem())
+                    context:addOptionOnTop(getText("ContextMenu_GET_ON_BIKE"), playerNum, Bike.onEquipBike, item:getWorldItem())
                     return
                 else
-                    context:addOptionOnTop(getText("ContextMenu_GRAB_BIKE_TO_GROUND"), playerObj, Bike.onGrabBikeFromContainer, item)
+                    context:addOptionOnTop(getText("ContextMenu_GET_ON_BIKE"), playerNum, Bike.onGrabBikeFromContainer, item)
                     return
                 end
-            elseif item == playerObj:getPrimaryHandItem() then
-                context:addOptionOnTop(getText("ContextMenu_GET_OFF_BIKE"), playerObj, Bike.onUnequipBike, item)
-                return
             end
         end
     end

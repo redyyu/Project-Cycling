@@ -5,7 +5,7 @@ module PROJCycling
     }
 
     item Bike {
-        Weight = 4,
+        Weight = 8,
         Type = Container,
         DisplayCategory = Container,
         Capacity = 20,
@@ -24,7 +24,7 @@ module PROJCycling
         WorldStaticModel = Bike_Ground,
         ReplaceInPrimaryHand = none holdingbikeright,
 
-        Tags = Bike,
+        Tags = Bike;HeavyItem,
     }
 
 }
