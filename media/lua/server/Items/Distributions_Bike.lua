@@ -2,11 +2,6 @@ local BIKE_TYPES = {
     "PROJCycling.Bike",
 }
 
-local SPAWN_ROOMS = {
-    ["garagestorage"] = 10,
-    ["garage"] = 10,
-}
-
 for _, item_type in ipairs(BIKE_TYPES) do
     table.insert(ProceduralDistributions["list"]["GigamartTools"].items, item_type)
     table.insert(ProceduralDistributions["list"]["GigamartTools"].items, 2)
@@ -37,6 +32,13 @@ for _, item_type in ipairs(BIKE_TYPES) do
 end
 
 
+
+local SPAWN_ROOMS = {
+    ["storageunit"] = 5,
+    ["garagestorage"] = 5,
+    ["garage"] = 5,
+}
+
 local function spawnBikeInGarage(room)
     local base_chance = SPAWN_ROOMS[room:getName()]
     if base_chance ~= nil and ZombRand(1, 100) < base_chance then
@@ -49,13 +51,13 @@ Events.OnSeeNewRoom.Add(spawnBikeInGarage)
 
 
 
-local SPAWN_SPRITES = {
-    ["lighting_outdoor_01_0"] = 1,
-    ["lighting_outdoor_01_1"] = 1,
-    ["lighting_outdoor_01_2"] = 1,
-    ["lighting_outdoor_01_16"] = 1,
-    ["lighting_outdoor_01_17"] = 1,
-}
+-- local SPAWN_SPRITES = {
+--     ["lighting_outdoor_01_0"] = 1,
+--     ["lighting_outdoor_01_1"] = 1,
+--     ["lighting_outdoor_01_2"] = 1,
+--     ["lighting_outdoor_01_16"] = 1,
+--     ["lighting_outdoor_01_17"] = 1,
+-- }
 
 
 -- it little big slow down the FPS of game, but seems ok.
