@@ -1,7 +1,0 @@
-VERSION = 1,
-
-option PROJCycling.SpawnChance {
-	type = integer, min = 1, max = 100, default = 50,
-	page = RavenCraft, translation = PROJCycling_SPAWN_CHANCE,
-}
-
