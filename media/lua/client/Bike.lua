@@ -99,6 +99,21 @@ Bike.dropItemInsanely = function(playerObj, item, square)
 end
 
 
+Bike.onPlayerMove = function(playerObj)
+    local handItem = playerObj:getPrimaryHandItem()
+    if handItem and handItem:hasTag('Bike') then
+        local body_damage = playerObj:getBodyDamage()
+
+        -- make fun when cycling.
+        if body_damage:getBoredomLevel() > 0 then
+            body_damage:setBoredomLevel(body_damage:getBoredomLevel() - 0.1)
+        end
+        if body_damage:getUnhappynessLevel() > 0 then
+            body_damage:setUnhappynessLevel(body_damage:getUnhappynessLevel() - 0.1)
+        end
+    end
+end
+
 Bike.onPlayerUpdate = function (playerObj)
 
     local playerInv = playerObj:getInventory()
@@ -141,7 +156,7 @@ Bike.onPlayerUpdate = function (playerObj)
                 if endurance < 0.95 then
                     player_stats:setEndurance(endurance + 0.00010)  -- dont change this number, unless know what doing.
                 end
-        
+                
                 -- attach sound
                 playerObj:getEmitter():stopSoundByName('HumanFootstepsCombined')
                 if playerObj:isPlayerMoving() then
@@ -294,7 +309,7 @@ Bike.doInventoryContextMenu = function (playerNum, context, items)
     end
 end
 
-
+Events.OnPlayerMove.Add(Bike.onPlayerMove)
 Events.OnPlayerUpdate.Add(Bike.onPlayerUpdate)
 Events.OnEnterVehicle.Add(Bike.onEnterVehicle)
 
