@@ -2,7 +2,7 @@
 <animNode>
 	<m_Name>sprintbikeright</m_Name>
 	<m_AnimName>BikeRun</m_AnimName>
-	<m_SpeedScale>2</m_SpeedScale>
+	<m_SpeedScale>5.0</m_SpeedScale>
 	<m_deferredBoneAxis>Y</m_deferredBoneAxis>
 	<m_Priority>10</m_Priority>
 	<m_BlendTime>0.50</m_BlendTime>

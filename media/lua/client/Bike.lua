@@ -21,7 +21,7 @@ local Bike = {}
 
 Bike.getBikesFromInvertory = function (playerInv)
     local bike_items = {}
-    local items = playerInv:getItems()
+    local items = playerInv:getAllCategory("Container")
     for j = 0, items:size() - 1 do
         local item = items:get(j)
         if item:hasTag('Bike') then
@@ -114,10 +114,22 @@ Bike.onPlayerMove = function(playerObj)
     end
 end
 
+
+Bike.onPlayerMove = function (playerObj)
+    local playerInv = playerObj:getInventory()
+    local handItem = playerObj:getPrimaryHandItem()
+    if handItem and handItem:hasTag("Bike") then
+        playerObj:setSneaking(false)
+        if not playerObj:isRunning() and not playerObj:isSprinting() then
+            playerObj:setRunning(true)
+        end
+    end
+end
+
+
 Bike.onPlayerUpdate = function (playerObj)
 
     local playerInv = playerObj:getInventory()
-    local handItem = playerObj:getPrimaryHandItem()
     local equippedBike = false
 
     for idx, item in ipairs(Bike.getBikesFromInvertory(playerInv)) do
@@ -153,10 +165,10 @@ Bike.onPlayerUpdate = function (playerObj)
             if playerObj:getVariableString("righthandmask") == "holdingbikeright" then
                 local player_stats = playerObj:getStats()
                 local endurance = player_stats:getEndurance()
-                if endurance < 0.95 then
-                    player_stats:setEndurance(endurance + 0.00010)  -- dont change this number, unless know what doing.
+                if endurance < 1 then
+                    player_stats:setEndurance(endurance + ZombRand(0, 20) / 100000)  -- dont change this number, unless know what doing.
                 end
-                
+
                 -- attach sound
                 playerObj:getEmitter():stopSoundByName('HumanFootstepsCombined')
                 if playerObj:isPlayerMoving() then
