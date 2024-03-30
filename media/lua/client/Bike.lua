@@ -21,7 +21,7 @@ local Bike = {}
 
 Bike.getBikesFromInvertory = function (playerInv)
     local bike_items = {}
-    local items = playerInv:getAllCategory("Container")
+    local items = playerInv:getItemsFromCategory("Container") -- same with getAllCategory("Container")
     for j = 0, items:size() - 1 do
         local item = items:get(j)
         if item:hasTag('Bike') then
