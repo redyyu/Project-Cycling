@@ -50,7 +50,7 @@ function ISTakeBike:perform()
     self.character:getInventory():AddItem(self.item)
     self.action:stopTimedActionAnim()
     self.action:setLoopedAction(false)
-    self.character:setPrimaryHandItem(self.item)
+    -- self.character:setPrimaryHandItem(self.item)
     self.character:setSecondaryHandItem(self.item)
     local pdata = getPlayerData(self.character:getPlayerNum())
     if pdata ~= nil then

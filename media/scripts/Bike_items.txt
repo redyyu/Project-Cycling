@@ -9,20 +9,20 @@ module PROJCycling
         Type = Container,
         DisplayCategory = Container,
         Capacity = 20,
-        WeightReduction = 98,
+        WeightReduction = 99,
         DisplayName = Bicycle,
         Icon = Bike,
 
         PutInSound = PutItemInBag,
 
         SurvivalGear  = TRUE,
-        RequiresEquippedBothHands = TRUE,
-        RunSpeedModifier = 1.05, /* Its wont be speed up, only for cover other clothes slow down.*/
+        /* RequiresEquippedBothHands = TRUE, */
+        RunSpeedModifier = 1.25, /* Its wont be speed up, only for cover other clothes slow down.*/
         MetalValue = 40,
 
         StaticModel = Bike,
         WorldStaticModel = Bike_Ground,
-        ReplaceInPrimaryHand = none holdingbikeright,
+        ReplaceInSecondHand = none holdingbike,
 
         Tags = Bike;HeavyItem,
     }

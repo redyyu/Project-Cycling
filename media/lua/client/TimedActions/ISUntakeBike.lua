@@ -10,8 +10,7 @@ ISUntakeBike = ISBaseTimedAction:derive("ISUntakeBike");
 
 function ISUntakeBike:isValid()
     -- Check that the item wasn't picked up by a preceding action
-    if self.item == nil or not self.item:hasTag('Bike') or self.item ~= self.character:getPrimaryHandItem() then return false end
-    return true
+    return self.item ~= nil and self.item:hasTag('Bike')
 end
 
 function ISUntakeBike:start()
@@ -36,7 +35,7 @@ function ISUntakeBike:perform()
     -- from TimedActions/ISEquipWeaponAction.lua drop Corps and Generator or any other item hasTag `HeavyItem`
     local square = self.character:getCurrentSquare()
     self.character:getInventory():Remove(self.item)
-    self.character:setPrimaryHandItem(nil)
+    -- self.character:setPrimaryHandItem(nil)
     self.character:setSecondaryHandItem(nil)
 
     self.toSquare:AddWorldInventoryItem(self.item, 0, 0, 0)

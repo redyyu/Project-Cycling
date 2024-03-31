@@ -79,9 +79,9 @@ Bike.dropItemInsanely = function(playerObj, item, square)
             square = playerObj:getSquare()
         end
 
-        if item == playerObj:getPrimaryHandItem() then
-            playerObj:setPrimaryHandItem(nil)
-        end
+        -- if item == playerObj:getPrimaryHandItem() then
+        --     playerObj:setPrimaryHandItem(nil)
+        -- end
         if item == playerObj:getSecondaryHandItem() then
             playerObj:setSecondaryHandItem(nil)
         end
@@ -100,7 +100,7 @@ end
 
 
 Bike.onPlayerMove = function(playerObj)
-    local handItem = playerObj:getPrimaryHandItem()
+    local handItem = playerObj:getSecondaryHandItem()
     if handItem and handItem:hasTag('Bike') then
         local body_damage = playerObj:getBodyDamage()
 
@@ -117,7 +117,7 @@ end
 
 Bike.onPlayerMove = function (playerObj)
     local playerInv = playerObj:getInventory()
-    local handItem = playerObj:getPrimaryHandItem()
+    local handItem = playerObj:getSecondaryHandItem()
     if handItem and handItem:hasTag("Bike") then
         playerObj:setSneaking(false)
         if not playerObj:isRunning() and not playerObj:isSprinting() then
@@ -162,7 +162,7 @@ Bike.onPlayerUpdate = function (playerObj)
 
         if playerObj:getCurrentState() == IdleState.instance() then
 
-            if playerObj:getVariableString("righthandmask") == "holdingbikeright" then
+            if playerObj:getVariableString("lefthandmask") == "holdingbike" then
                 local player_stats = playerObj:getStats()
                 local endurance = player_stats:getEndurance()
                 if endurance < 1 then
@@ -219,14 +219,14 @@ end
 
 
 Bike.onEnterVehicle = function (playerObj)
-    if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag('Bike') then
-        local equippedBike = playerObj:getPrimaryHandItem()
+    local handItem = playerObj:getSecondaryHandItem()
+    if handItem and hanItem:hasTag('Bike') then
         local vehicle = playerObj:getVehicle()
         local areaCenter = vehicle:getAreaCenter(seatNameTable[vehicle:getSeat(playerObj)+1])
 
         if areaCenter then
             local sqr = getCell():getGridSquare(areaCenter:getX(), areaCenter:getY(), vehicle:getZ())
-            Bike.dropItemInsanely(playerObj, equippedBike, sqr)
+            Bike.dropItemInsanely(playerObj, handItem, sqr)
         end
     end
 end
@@ -244,10 +244,10 @@ Bike.onEquipBike = function (playerNum, bike)
     end
     
     if walk_to then
-        if playerObj:getPrimaryHandItem() then
-            ISTimedActionQueue.add(ISUnequipAction:new(playerObj, playerObj:getPrimaryHandItem(), 50));
-        end
-        if playerObj:getSecondaryHandItem() and playerObj:getSecondaryHandItem() ~= playerObj:getPrimaryHandItem() then
+        -- if playerObj:getPrimaryHandItem() then
+        --     ISTimedActionQueue.add(ISUnequipAction:new(playerObj, playerObj:getPrimaryHandItem(), 50));
+        -- end
+        if playerObj:getSecondaryHandItem() then
             ISTimedActionQueue.add(ISUnequipAction:new(playerObj, playerObj:getSecondaryHandItem(), 50));
         end
         ISTimedActionQueue.add(ISTakeBike:new(playerObj, bike, 50))
@@ -264,7 +264,7 @@ end
 Bike.doFillWorldObjectContextMenu = function (playerNum, context, worldobjects, test)
     local playerObj = getSpecificPlayer(playerNum)
     local playerInv = playerObj:getInventory()
-    local item = playerObj:getPrimaryHandItem()
+    local item = playerObj:getSecondaryHandItem()
 
     -- Bike Item has tag `HeavyItem`, native will take care many things.
 
@@ -281,6 +281,10 @@ Bike.doFillWorldObjectContextMenu = function (playerNum, context, worldobjects, 
         for _, obj in ipairs(worldObjTable) do
             local item = obj:getItem()
             if item and item:hasTag('Bike') and not playerObj:isHandItem(item)then
+                context:removeOptionByName(getText("ContextMenu_Equip_Two_Hands"))
+                context:removeOptionByName(getText("ContextMenu_Equip_Primary"))
+                context:removeOptionByName(getText("ContextMenu_Equip_Secondary"))
+                context:removeOptionByName(getText("ContextMenu_Unequip"))
                 local old_option = context:getOptionFromName(getText("ContextMenu_Grab"))
                 if old_option then
                     context:removeOptionByName(old_option.name)
@@ -302,6 +306,8 @@ Bike.doInventoryContextMenu = function (playerNum, context, items)
     for _, item in ipairs(items) do
         if item and item:hasTag('bike') then
             context:removeOptionByName(getText("ContextMenu_Equip_Two_Hands"))
+            context:removeOptionByName(getText("ContextMenu_Equip_Primary"))
+            context:removeOptionByName(getText("ContextMenu_Equip_Secondary"))
             context:removeOptionByName(getText("ContextMenu_Unequip"))
 
             -- local old_option = context:getOptionFromName(getText("ContextMenu_Grab"))
