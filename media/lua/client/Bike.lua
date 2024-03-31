@@ -166,7 +166,15 @@ Bike.onPlayerUpdate = function (playerObj)
                 local player_stats = playerObj:getStats()
                 local endurance = player_stats:getEndurance()
                 if endurance < 1 then
-                    player_stats:setEndurance(endurance + ZombRand(0, 20) / 100000)  -- dont change this number, unless know what doing.
+                    -- dont change modifier numbers, unless know what doing.
+                    local edr_modifier = ZombRand(0, 5) / 100000
+
+                    -- recovering faster while can sprint or idle (no walk on bike)
+                    if endurance > 0.5 or (not playerObj:isRunning() and not playerObj:isSprinting()) then
+                        edr_modifier = ZombRand(0, 20) / 100000
+                    end
+
+                    player_stats:setEndurance(endurance + edr_modifier)
                 end
 
                 -- attach sound
