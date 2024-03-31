@@ -221,7 +221,7 @@ end
 
 Bike.onEnterVehicle = function (playerObj)
     local handItem = playerObj:getSecondaryHandItem()
-    if handItem and hanItem:hasTag('Bike') then
+    if handItem and handItem:hasTag('Bike') then
         local vehicle = playerObj:getVehicle()
         local areaCenter = vehicle:getAreaCenter(seatNameTable[vehicle:getSeat(playerObj)+1])
 
