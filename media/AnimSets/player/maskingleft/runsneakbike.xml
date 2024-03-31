@@ -38,7 +38,7 @@
 		<m_Type>BOOL</m_Type>
 		<m_BoolValue>true</m_BoolValue>
 	</m_Conditions>
-	<m_2DBlends referenceID="1">
+	<!-- <m_2DBlends referenceID="1">
 		<m_AnimName>BikeRun</m_AnimName>
 		<m_XPos>0.00</m_XPos>
 		<m_YPos>0.00</m_YPos>
@@ -115,7 +115,7 @@
 		<node1>1</node1>
 		<node2>5</node2>
 		<node3>2</node3>
-	</m_2DBlendTri>
+	</m_2DBlendTri> -->
 	<m_Transitions>
 		<m_Target>sprintbike</m_Target>
 		<m_blendInTime>0.1</m_blendInTime>
