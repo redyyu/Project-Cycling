@@ -266,12 +266,10 @@ Bike.doFillWorldObjectContextMenu = function (playerNum, context, worldobjects, 
     local playerInv = playerObj:getInventory()
     local item = playerObj:getSecondaryHandItem()
 
-    -- Bike Item has tag `HeavyItem`, native will take care many things.
-
     if item and item:hasTag('Bike') then
-        -- HeavyItem have own drop option, replace it
         context:removeOptionByName(getText("ContextMenu_Drop"))
         context:removeOptionByName(getText("ContextMenu_DropNamedItem", item:getDisplayName()))
+        -- HeavyItem have own drop option, replace it
         context:addOptionOnTop(getText("ContextMenu_GET_OFF_BIKE"), playerNum, Bike.onUnequipBike, item)
         return
     else
@@ -301,17 +299,13 @@ Bike.doInventoryContextMenu = function (playerNum, context, items)
     local playerObj = getSpecificPlayer(playerNum)
     local items = ISInventoryPane.getActualItems(items)
 
-    -- Bike Item has tag `HeavyItem`, native will take care many things.
-
     for _, item in ipairs(items) do
         if item and item:hasTag('bike') then
             context:removeOptionByName(getText("ContextMenu_Equip_Two_Hands"))
             context:removeOptionByName(getText("ContextMenu_Equip_Primary"))
             context:removeOptionByName(getText("ContextMenu_Equip_Secondary"))
             context:removeOptionByName(getText("ContextMenu_Unequip"))
-
-            -- local old_option = context:getOptionFromName(getText("ContextMenu_Grab"))
-            -- NO Need this, `HeavyItem` don't have `Grab` option in Inventory.
+            context:removeOptionByName(getText("ContextMenu_Grab"))
             
             if playerObj:isHandItem(item) then
                 -- replace native Drop

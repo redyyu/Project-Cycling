@@ -10,7 +10,7 @@ module PROJCycling
         DisplayCategory = Container,
         Capacity = 20,
         WeightReduction = 99,
-        DisplayName = Bicycle,
+        DisplayName = MTB Bike,
         Icon = Bike,
 
         PutInSound = PutItemInBag,
@@ -24,7 +24,7 @@ module PROJCycling
         WorldStaticModel = Bike_Ground,
         ReplaceInSecondHand = none holdingbike,
 
-        Tags = Bike;HeavyItem,
+        Tags = Bike,
     }
 
 }
