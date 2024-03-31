@@ -99,22 +99,6 @@ Bike.dropItemInsanely = function(playerObj, item, square)
 end
 
 
-Bike.onPlayerMove = function(playerObj)
-    local handItem = playerObj:getSecondaryHandItem()
-    if handItem and handItem:hasTag('Bike') then
-        local body_damage = playerObj:getBodyDamage()
-
-        -- make fun when cycling.
-        if body_damage:getBoredomLevel() > 0 then
-            body_damage:setBoredomLevel(body_damage:getBoredomLevel() - 0.1)
-        end
-        if body_damage:getUnhappynessLevel() > 0 then
-            body_damage:setUnhappynessLevel(body_damage:getUnhappynessLevel() - 0.1)
-        end
-    end
-end
-
-
 Bike.onPlayerMove = function (playerObj)
     local playerInv = playerObj:getInventory()
     local handItem = playerObj:getSecondaryHandItem()
@@ -122,6 +106,15 @@ Bike.onPlayerMove = function (playerObj)
         playerObj:setSneaking(false)
         if not playerObj:isRunning() and not playerObj:isSprinting() then
             playerObj:setRunning(true)
+        end
+
+        local body_damage = playerObj:getBodyDamage()
+        -- make fun when cycling.
+        if body_damage:getBoredomLevel() > 0 then
+            body_damage:setBoredomLevel(body_damage:getBoredomLevel() - 0.05)
+        end
+        if body_damage:getUnhappynessLevel() > 0 then
+            body_damage:setUnhappynessLevel(body_damage:getUnhappynessLevel() - 0.01)
         end
     end
 end
