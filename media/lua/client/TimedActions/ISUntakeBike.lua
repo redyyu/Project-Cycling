@@ -6,7 +6,7 @@ require "TimedActions/ISBaseTimedAction"
 -- require "TimedActions/ISEquipWeaponAction"
 
 
-ISUntakeBike = ISBaseTimedAction:derive("ISUntakeBike");
+ISUntakeBike = ISBaseTimedAction:derive("ISUntakeBike")
 
 function ISUntakeBike:isValid()
     -- Check that the item wasn't picked up by a preceding action
@@ -14,20 +14,20 @@ function ISUntakeBike:isValid()
 end
 
 function ISUntakeBike:start()
-    self:setActionAnim("Loot");
-    self:setAnimVariable("LootPosition", "Low");
+    self:setActionAnim("Loot")
+    self:setAnimVariable("LootPosition", "Low")
     self:setOverrideHandModels(nil, nil)
     self.item:setJobType(getText("ContextMenu_GET_OFF_BIKE"))
     self.item:setJobDelta(0.0)
 end
 
 function ISUntakeBike:update()
-    self.item:setJobDelta(self:getJobDelta());
+    self.item:setJobDelta(self:getJobDelta())
 end
 
 function ISUntakeBike:stop()
     ISBaseTimedAction.stop(self)
-    self.item:setJobDelta(0.0);
+    self.item:setJobDelta(0.0)
 end
 
 function ISUntakeBike:perform()
@@ -44,8 +44,8 @@ function ISUntakeBike:perform()
         pdata.playerInventory:refreshBackpacks()
         pdata.lootInventory:refreshBackpacks()
     end
-    self.item:setJobDelta(0.0);
-    ISBaseTimedAction.perform(self);
+    self.item:setJobDelta(0.0)
+    ISBaseTimedAction.perform(self)
 end
 
 function ISUntakeBike:new(character, item, toSquare, time)

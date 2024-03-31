@@ -6,7 +6,7 @@ require "TimedActions/ISBaseTimedAction"
 -- require "TimedActions/ISEquipWeaponAction"
 
 
-ISTakeBike = ISBaseTimedAction:derive("ISTakeBike");
+ISTakeBike = ISBaseTimedAction:derive("ISTakeBike")
 
 function ISTakeBike:isValid()
     -- Check that the item wasn't picked up by a preceding action
@@ -15,15 +15,15 @@ function ISTakeBike:isValid()
 end
 
 function ISTakeBike:update()
-    self.item:setJobDelta(self:getJobDelta());
+    self.item:setJobDelta(self:getJobDelta())
 end
 
 function ISTakeBike:start()
-    self:setActionAnim("Loot");
-    self:setAnimVariable("LootPosition", "Low");
-    self:setOverrideHandModels(nil, nil);
-    self.item:setJobType(getText("ContextMenu_TAKE_RIDE"));
-    self.item:setJobDelta(0.0);
+    self:setActionAnim("Loot")
+    self:setAnimVariable("LootPosition", "Low")
+    self:setOverrideHandModels(nil, nil)
+    self.item:setJobType(getText("ContextMenu_TAKE_RIDE"))
+    self.item:setJobDelta(0.0)
 end
 
 function ISTakeBike:update()
@@ -31,8 +31,8 @@ function ISTakeBike:update()
 end
 
 function ISTakeBike:stop()
-    self.item:setJobDelta(0.0);
-    ISBaseTimedAction.stop(self);
+    self.item:setJobDelta(0.0)
+    ISBaseTimedAction.stop(self)
 end
 
 function ISTakeBike:perform()
@@ -58,7 +58,7 @@ function ISTakeBike:perform()
         pdata.lootInventory:refreshBackpacks()
     end
     -- needed to remove from queue / start next.
-    ISBaseTimedAction.perform(self);
+    ISBaseTimedAction.perform(self)
 
 end
 
@@ -71,7 +71,7 @@ function ISTakeBike:new (character, item, time)
     o.worldItem = item:getWorldItem()
     o.stopOnWalk = true
     o.stopOnRun = true   
-    o.maxTime = time;
+    o.maxTime = time
     o.loopedAction = false
     return o
 end

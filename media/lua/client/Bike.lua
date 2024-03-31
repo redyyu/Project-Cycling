@@ -90,7 +90,7 @@ Bike.dropItemInsanely = function(playerObj, item, square)
         local dropX,dropY,dropZ = ISInventoryTransferAction.GetDropItemOffset(playerObj, playerObj:getCurrentSquare(), primary)
         playerObj:getCurrentSquare():AddWorldInventoryItem(item, dropX, dropY, dropZ)
 
-        local pdata = getPlayerData(playerObj:getPlayerNum());
+        local pdata = getPlayerData(playerObj:getPlayerNum())
         if pdata ~= nil then
             pdata.playerInventory:refreshBackpacks()
             pdata.lootInventory:refreshBackpacks()
@@ -253,10 +253,10 @@ Bike.onEquipBike = function (playerNum, bike)
     
     if walk_to then
         -- if playerObj:getPrimaryHandItem() then
-        --     ISTimedActionQueue.add(ISUnequipAction:new(playerObj, playerObj:getPrimaryHandItem(), 50));
+        --     ISTimedActionQueue.add(ISUnequipAction:new(playerObj, playerObj:getPrimaryHandItem(), 50))
         -- end
         if playerObj:getSecondaryHandItem() then
-            ISTimedActionQueue.add(ISUnequipAction:new(playerObj, playerObj:getSecondaryHandItem(), 50));
+            ISTimedActionQueue.add(ISUnequipAction:new(playerObj, playerObj:getSecondaryHandItem(), 50))
         end
         ISTimedActionQueue.add(ISTakeBike:new(playerObj, bike, 50))
     end
