@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<animNode>
+	<!-- used to fixing animation problem right hand holding bag while EDR is low. -->
+	<m_Name>holdingbagrightOnBike</m_Name>
+	<m_AnimName>BikeIdle</m_AnimName>
+	<m_Priority>10</m_Priority>
+	<m_deferredBoneAxis>Y</m_deferredBoneAxis>
+	<m_SpeedScale>0.48</m_SpeedScale>
+	<m_BlendTime>0.20</m_BlendTime>
+	<m_Conditions>
+		<m_Name>RightHandMask</m_Name>
+		<m_Type>STRING</m_Type>
+		<m_StringValue>holdingbagright</m_StringValue>
+	</m_Conditions>
+	<m_Conditions>
+		<m_Name>LeftHandMask</m_Name>
+		<m_Type>STRING</m_Type>
+		<m_StringValue>holdingbike</m_StringValue>
+	</m_Conditions>
+	<m_SubStateBoneWeights>
+		<boneName>Bip01</boneName>
+		<weight>0.00</weight>
+	</m_SubStateBoneWeights>
+	<m_SubStateBoneWeights>
+		<boneName>Bip01_R_Clavicle</boneName>
+	</m_SubStateBoneWeights>
+	<m_SubStateBoneWeights>
+		<boneName>Bip01_Prop1</boneName>
+	</m_SubStateBoneWeights>
+</animNode>
