@@ -268,8 +268,9 @@ Bike.doFillWorldObjectContextMenu = function (playerNum, context, worldobjects, 
     local item = playerObj:getSecondaryHandItem()
 
     if item and item:hasTag('Bike') then
-        context:removeOptionByName(getText("ContextMenu_Drop"))
-        context:removeOptionByName(getText("ContextMenu_DropNamedItem", item:getDisplayName()))
+        context:clear()
+        -- context:removeOptionByName(getText("ContextMenu_Drop"))
+        -- context:removeOptionByName(getText("ContextMenu_DropNamedItem", item:getDisplayName()))
         -- HeavyItem have own drop option, replace it
         context:addOptionOnTop(getText("ContextMenu_GET_OFF_BIKE"), playerNum, Bike.onUnequipBike, item)
         return
