@@ -116,6 +116,8 @@ Bike.onPlayerMove = function (playerObj)
         if body_damage:getUnhappynessLevel() > 0 then
             body_damage:setUnhappynessLevel(body_damage:getUnhappynessLevel() - 0.01)
         end
+
+        playerObj:setMetabolicTarget(Metabolics.Fitness)
     end
 end
 
