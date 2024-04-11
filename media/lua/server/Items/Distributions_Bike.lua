@@ -44,7 +44,9 @@ local function spawnBikeInGarage(room)
     if base_chance ~= nil and ZombRand(1, 100) < base_chance then
         local square = room:getRandomFreeSquare()
         local num_type = ZombRand(1, #BIKE_TYPES)
-        square:AddWorldInventoryItem(BIKE_TYPES[num_type], ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
+        if square then
+            square:AddWorldInventoryItem(BIKE_TYPES[num_type], ZombRand(0.1, 0.5), ZombRand(0.1, 0.5), 0)
+        end
     end
 end
 Events.OnSeeNewRoom.Add(spawnBikeInGarage)
