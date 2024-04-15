@@ -111,10 +111,12 @@ Bike.onPlayerMove = function (playerObj)
         local body_damage = playerObj:getBodyDamage()
         -- make fun when cycling.
         if body_damage:getBoredomLevel() > 0 then
-            body_damage:setBoredomLevel(body_damage:getBoredomLevel() - 0.05)
+            local boredom_level = math.max(body_damage:getBoredomLevel() - 0.05, 0)
+            body_damage:setBoredomLevel(boredom_level)
         end
         if body_damage:getUnhappynessLevel() > 0 then
-            body_damage:setUnhappynessLevel(body_damage:getUnhappynessLevel() - 0.01)
+            local unhappy_level = math.max(body_damage:getUnhappynessLevel() - 0.01, 0)
+            body_damage:setUnhappynessLevel(unhappy_level)
         end
         -- NO NEED this, running already enough.
         -- playerObj:setMetabolicTarget(Metabolics.Fitness)
