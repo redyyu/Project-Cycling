@@ -4,31 +4,31 @@ local BIKE_TYPES = {
 
 for _, item_type in ipairs(BIKE_TYPES) do
     table.insert(ProceduralDistributions["list"]["GigamartTools"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["GigamartTools"].items, 2)
+    table.insert(ProceduralDistributions["list"]["GigamartTools"].items, 1)
 
     table.insert(ProceduralDistributions["list"]["GigamartHousewares"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["GigamartHousewares"].items, 2)
+    table.insert(ProceduralDistributions["list"]["GigamartHousewares"].items, 1)
 
     table.insert(ProceduralDistributions["list"]["CrateTools"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["CrateTools"].items, 0.5)
+    table.insert(ProceduralDistributions["list"]["CrateTools"].items, 0.25)
 
     table.insert(ProceduralDistributions["list"]["CrateMetalwork"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["CrateMetalwork"].items, 0.5)
+    table.insert(ProceduralDistributions["list"]["CrateMetalwork"].items, 0.25)
 
     table.insert(ProceduralDistributions["list"]["StoreCounterBagsFancy"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["StoreCounterBagsFancy"].items, 0.5)
+    table.insert(ProceduralDistributions["list"]["StoreCounterBagsFancy"].items, 0.25)
 
     table.insert(ProceduralDistributions["list"]["JanitorTools"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["JanitorTools"].items, 0.5)
+    table.insert(ProceduralDistributions["list"]["JanitorTools"].items, 0.25)
 
     table.insert(ProceduralDistributions["list"]["ToolStoreFarming"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["ToolStoreFarming"].items, 1)
+    table.insert(ProceduralDistributions["list"]["ToolStoreFarming"].items, 0.5)
 
     table.insert(ProceduralDistributions["list"]["ToolStoreMisc"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["ToolStoreMisc"].items, 0.5)
+    table.insert(ProceduralDistributions["list"]["ToolStoreMisc"].items, 0.25)
 
     table.insert(ProceduralDistributions["list"]["ToolStoreTools"].items, item_type)
-    table.insert(ProceduralDistributions["list"]["ToolStoreTools"].items, 0.5)
+    table.insert(ProceduralDistributions["list"]["ToolStoreTools"].items, 0.25)
 end
 
 
